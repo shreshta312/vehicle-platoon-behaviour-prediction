@@ -1,197 +1,240 @@
-# Vehicle Platoon Behaviour Prediction
+# Safety-Aware Vehicle Platoon Behaviour Prediction
 
-A machine learning project for predicting and analyzing vehicle platoon behavior, dynamics, and interactions in autonomous and semi-autonomous driving scenarios.
+This project builds a machine learning pipeline to predict vehicle platoon behaviours such as **FOLLOW**, **BRAKE**, **CHANGE_LANE_LEFT**, and **CHANGE_LANE_RIGHT** using trajectory-based driving features.
 
-## Project Overview
+The project combines controlled platoon scenario generation, deep learning models, adversarial robustness testing, temporal modelling, SHAP explainability, and an initial extension toward real-world NGSIM highway trajectory data.
 
-This project develops predictive models to understand and forecast vehicle platooning behavior, including vehicle spacing, acceleration patterns, and coordination dynamics. It combines data preprocessing, feature engineering, and machine learning techniques to provide insights into platoon formation and driver behavior.
+---
+
+## Project Motivation
+
+Vehicle platooning is an important concept in intelligent transportation systems where vehicles travel in coordinated groups to improve traffic flow, fuel efficiency, and road safety.
+In such systems, predicting whether a vehicle should continue following, brake, or change lanes is safety-critical.
+
+This project focuses on building a behaviour prediction pipeline that can classify platoon-like driving decisions using surrounding vehicle information such as:
+
+* Ego vehicle speed
+* Front vehicle distance
+* Relative velocity
+* Time gap
+* Adjacent lane front and rear distances
+
+---
+
+## Key Features
+
+* Generated synthetic platoon-like driving scenarios for controlled ML training
+* Trained baseline deep learning model for behaviour classification
+* Built a safety-aware model using adversarial training concepts
+* Evaluated safety-critical BRAKE recall
+* Added temporal modelling using MLP and LSTM-based approaches
+* Performed FGSM adversarial robustness testing
+* Used SHAP explainability to interpret model predictions
+* Extended the pipeline toward real-world NGSIM trajectory data
+* Engineered front-vehicle and adjacent-lane features from noisy highway trajectory data
+
+---
+
+## Behaviour Classes
+
+The model predicts one of four vehicle behaviours:
+
+| Label | Behaviour         |
+| ----- | ----------------- |
+| 0     | BRAKE             |
+| 1     | FOLLOW            |
+| 2     | CHANGE_LANE_LEFT  |
+| 3     | CHANGE_LANE_RIGHT |
+
+---
+
+## Tech Stack
+
+* Python
+* TensorFlow / Keras
+* Scikit-learn
+* Pandas
+* NumPy
+* Matplotlib
+* SHAP
+* Joblib
+
+---
+
+## Dataset
+
+This project uses two types of datasets:
+
+### 1. Synthetic Platoon Dataset
+
+A controlled synthetic dataset was generated to simulate platoon-like driving scenarios with features such as front distance, relative velocity, time gap, and adjacent lane distances.
+
+This dataset was used to build and test the main behaviour prediction pipeline.
+
+### 2. NGSIM Trajectory Extension
+
+The project also includes an experimental real-world extension using NGSIM highway trajectory data.
+The raw NGSIM data was cleaned and transformed into platoon-like driving features by extracting:
+
+* Front vehicle distance
+* Front relative velocity
+* Time gap
+* Adjacent lane front/rear distances
+* Derived behaviour labels from trajectory changes
+
+The NGSIM extension is included as an ongoing real-world validation direction.
+
+---
+
+## Model Results
+
+### Controlled Platoon Scenario Results
+
+| Model                        | Accuracy | Notes                                      |
+| ---------------------------- | -------: | ------------------------------------------ |
+| Baseline Deep Learning Model |   94.67% | Initial behaviour classification model     |
+| Safety-Aware Model           |   94.00% | Included adversarial training concepts     |
+| Temporal LSTM Model          |   94.00% | Used sequential driving behaviour features |
+
+The safety-aware model achieved strong performance on safety-critical braking behaviour, with **BRAKE recall of approximately 97%** on the controlled platoon dataset.
+
+---
+
+## Explainability
+
+SHAP was used to interpret model predictions and identify the most important features influencing safety-critical decisions.
+
+For BRAKE predictions, the most important features included:
+
+* Front relative velocity
+* Front distance
+* Time gap
+* Ego velocity
+
+This shows that the model learned physically meaningful driving features rather than relying only on arbitrary patterns.
+
+---
+
+## Robustness Testing
+
+The project includes FGSM-based adversarial testing to evaluate how stable the model remains under small perturbations in input features.
+
+The robustness experiments showed that the safety-aware model reduced overall attack success under stronger perturbations, although some safety-critical class confusions still require further improvement.
+
+---
 
 ## Project Structure
 
-```
+```text
 vehicle-platoon-behaviour-prediction/
 │
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── LICENSE
-│
 ├── data/
-│   ├── raw/                    # Original, immutable raw data
-│   ├── processed/              # Cleaned and processed data
-│   └── sample/                 # Sample datasets for testing
-│
-├── notebooks/
-│   ├── 01_data_exploration.ipynb      # Initial data analysis
-│   ├── 02_feature_engineering.ipynb   # Feature creation
-│   ├── 03_model_training.ipynb        # Model development
-│   └── 04_visualization.ipynb         # Results visualization
-│
-├── src/
-│   ├── data_preprocessing.py   # Data cleaning and transformation
-│   ├── feature_engineering.py  # Feature extraction and engineering
-│   ├── platoon_extraction.py   # Platoon identification logic
-│   ├── train_model.py          # Model training pipeline
-│   ├── evaluate_model.py       # Model evaluation metrics
-│   ├── visualization.py        # Plotting and visualization utilities
-│   └── utils.py                # Helper functions
-│
-├── models/
-│   ├── random_forest.pkl       # Trained model artifact
-│   └── scaler.pkl              # Feature scaler artifact
+│   ├── external/
+│   └── processed/
 │
 ├── outputs/
-│   ├── plots/                  # Generated visualizations
-│   ├── confusion_matrix/       # Model evaluation plots
-│   └── reports/                # Analysis reports
+│   ├── plots/
+│   └── reports/
 │
-├── dashboard/
-│   └── app.py                  # Interactive dashboard application
+├── simulation/
+│   └── webots/
 │
-└── docs/
-    ├── architecture.png        # System architecture diagram
-    ├── methodology.md          # Project methodology documentation
-    └── project_report.pdf      # Comprehensive project report
+├── src/
+│   ├── data/
+│   ├── data_generation/
+│   ├── explainability/
+│   ├── models/
+│   ├── safety/
+│   └── visualization/
+│
+├── requirements.txt
+├── .gitignore
+└── README.md
 ```
 
-## Features
+---
 
-- **Data Preprocessing**: Cleaning, validation, and transformation of vehicle trajectory data
-- **Feature Engineering**: Extraction of behavioral and kinematic features for platoon analysis
-- **Platoon Extraction**: Automatic identification and segmentation of vehicle platoons
-- **Machine Learning Models**: Random Forest and other algorithms for behavior prediction
-- **Visualization Tools**: Comprehensive plots for data exploration and results analysis
-- **Interactive Dashboard**: Web-based application for real-time visualization and analysis
+## How to Run
 
-## Installation
+### 1. Install dependencies
 
-1. Clone the repository:
-```bash
-git clone https://github.com/shreshta312/vehicle-platoon-behaviour-prediction.git
-cd vehicle-platoon-behaviour-prediction
-```
-
-2. Create a virtual environment (recommended):
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+### 2. Generate synthetic platoon data
 
-### Data Exploration
 ```bash
-jupyter notebook notebooks/01_data_exploration.ipynb
+python src/data_generation/generate_platoon_data.py
 ```
 
-### Feature Engineering
+### 3. Train baseline model
+
 ```bash
-jupyter notebook notebooks/02_feature_engineering.ipynb
+python src/models/train_baseline_model.py
 ```
 
-### Model Training
+### 4. Train safety-aware model
+
 ```bash
-python src/train_model.py
+python src/models/train_safe_model.py
 ```
 
-### Model Evaluation
+### 5. Evaluate model
+
 ```bash
-python src/evaluate_model.py
+python src/models/evaluate_model.py
 ```
 
-### Run Dashboard
+### 6. Run adversarial robustness testing
+
 ```bash
-python dashboard/app.py
+python src/safety/adversarial_evaluation.py
 ```
 
-## Notebooks
+### 7. Run SHAP explainability
 
-- **01_data_exploration.ipynb**: Exploratory data analysis (EDA) of vehicle trajectory datasets
-- **02_feature_engineering.ipynb**: Feature creation and selection process
-- **03_model_training.ipynb**: Model development and hyperparameter tuning
-- **04_visualization.ipynb**: Results visualization and analysis
-
-## Key Modules
-
-- `data_preprocessing.py`: Data cleaning and normalization
-- `feature_engineering.py`: Feature extraction from raw trajectory data
-- `platoon_extraction.py`: Logic for identifying vehicle platoons
-- `train_model.py`: Model training pipeline with cross-validation
-- `evaluate_model.py`: Comprehensive model evaluation and metrics
-- `visualization.py`: Plotting utilities for data and results
-- `utils.py`: General utility functions
-
-## Models
-
-- **Random Forest Model** (random_forest.pkl): Trained classifier for platoon behavior prediction
-- **Feature Scaler** (scaler.pkl): StandardScaler for feature normalization
-
-## Requirements
-
-See `requirements.txt` for all dependencies. Key packages include:
-- pandas
-- numpy
-- scikit-learn
-- matplotlib
-- seaborn
-- jupyter
-- [Add other specific requirements]
-
-## Results & Outputs
-
-- Confusion matrices and classification reports in `outputs/confusion_matrix/`
-- Generated visualizations in `outputs/plots/`
-- Analysis reports in `outputs/reports/`
-
-## Methodology
-
-See `docs/methodology.md` for detailed information about:
-- Data collection and preprocessing approach
-- Feature engineering strategy
-- Model architecture and selection
-- Evaluation metrics and validation approach
-
-## Architecture
-
-Refer to `docs/architecture.png` for a visual representation of the project architecture and data flow.
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the `LICENSE` file for details.
-
-## Author
-
-**Shreshta** - [GitHub Profile](https://github.com/shreshta312)
-
-## Contact
-
-For questions or inquiries about this project, please feel free to open an issue or reach out.
-
-## References
-
-[Add relevant papers, datasets, and resources here]
-
-## Acknowledgments
-
-- Dataset sources
-- Collaborators and advisors
-- Research papers and methodologies that inspired this work
+```bash
+python src/explainability/run_shap_fast.py
+```
 
 ---
 
-**Last Updated**: May 2026
+## NGSIM Extension
+
+The NGSIM pipeline is included to show how real-world highway trajectory data can be converted into platoon-like behaviour prediction features.
+
+Example command:
+
+```bash
+python src/data/prepare_ngsim_dataset_v2.py --input data/raw/ngsim.csv --sample 500000
+python src/models/train_ngsim_rf_model.py
+```
+
+Raw NGSIM files are not included in this repository due to size constraints.
+
+---
+
+## Current Limitations
+
+* The primary high-accuracy results are based on controlled synthetic platoon scenarios.
+* NGSIM labels are derived from observed trajectory changes, not manually annotated driver intentions.
+* Real-world trajectory prediction is noisier and requires richer temporal and neighbouring vehicle features.
+* The simulation component is experimental and not a full autonomous driving simulator.
+
+---
+
+## Future Work
+
+* Improve real-world NGSIM behaviour prediction using better temporal feature extraction
+* Add platoon-specific filtering for vehicle-following scenarios
+* Build a cleaner simulation demo for visualizing predicted behaviours
+* Experiment with sequence models such as LSTM/GRU/Transformer architectures
+* Add targeted adversarial training for safety-critical class confusions
+* Improve lane-change prediction using richer neighbouring vehicle context
+
+---
+
+## Summary
+
+This project demonstrates a complete ML workflow for safety-aware vehicle platoon behaviour prediction, including dataset generation, model training, evaluation, robustness testing, explainability, and real-world trajectory feature engineering.
