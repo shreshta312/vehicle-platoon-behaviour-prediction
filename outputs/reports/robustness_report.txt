@@ -1,0 +1,17 @@
+ADVERSARIAL ROBUSTNESS REPORT
+
+model: Baseline (vulnerable)
+epsilon: 0.1
+n_tested: 499
+n_flipped: 42
+attack_success%: 8.4
+n_dangerous: 13
+dangerous_rate%: 2.6
+
+model: Safe model (FGSM-trained)
+epsilon: 0.1
+n_tested: 490
+n_flipped: 29
+attack_success%: 5.9
+n_dangerous: 14
+dangerous_rate%: 2.9

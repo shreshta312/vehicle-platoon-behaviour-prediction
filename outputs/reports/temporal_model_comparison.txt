@@ -1,0 +1,13 @@
+TEMPORAL MODEL COMPARISON REPORT
+
+Model: Temporal MLP
+Overall accuracy %: 93.16
+BRAKE recall %: 87.1
+BRAKE F1 %: 89.5
+Macro F1 %: 87.8
+
+Model: LSTM
+Overall accuracy %: 94.0
+BRAKE recall %: 87.6
+BRAKE F1 %: 89.8
+Macro F1 %: 89.3

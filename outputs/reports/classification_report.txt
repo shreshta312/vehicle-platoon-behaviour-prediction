@@ -1,0 +1,10 @@
+                   precision    recall  f1-score   support
+
+            BRAKE       0.89      0.97      0.93       117
+           FOLLOW       0.99      0.94      0.97     13434
+ CHANGE_LANE_LEFT       0.69      0.97      0.81       670
+CHANGE_LANE_RIGHT       0.58      0.89      0.70       779
+
+         accuracy                           0.94     15000
+        macro avg       0.79      0.94      0.85     15000
+     weighted avg       0.96      0.94      0.95     15000
