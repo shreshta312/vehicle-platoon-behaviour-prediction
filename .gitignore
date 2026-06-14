@@ -16,8 +16,8 @@ models/*.h5
 models/*.keras
 models/*.joblib
 
-.DS_Store
-
 data/processed/platoon_data_ngsim*.csv
 outputs/reports/ngsim_*.txt
 outputs/plots/ngsim_*.png
+
+.DS_Store
